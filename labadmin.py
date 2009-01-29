@@ -20,31 +20,33 @@ class HostItem(object):
 	
 	def insert(self,t):
 		t.insertRow(0)
-		t.setItem(0, 0, HostWgt(self,self.ip))
-		t.setItem(0, 1, HostWgt(self,self.mac))
+		t.setItem(0, 0, HostWgt(self,str(self.ip)))
+		t.setItem(0, 1, HostWgt(self,str(self.mac)))
 
 
-
-def get_mac(host):
-	chi,cho = os.popen2( ("/usr/sbin/arp", "-n", host) )
+def get_macs(hosts):
+	chi,cho = os.popen2( ("/usr/sbin/arp", "-n") )
 	r = ''.join(cho.readlines())
-	m = re.search(host + '\s+ether\s+(\S+)', r)
-	if m:
-		p = m.group(1)
-		return p
-	else:
-		return None
+	chi.close()
+	cho.close()
+	macs = {}
+	for h in hosts:
+		macs[h] = None
+		print h + '\s+ether\s+(\S+)'
+		#print r
+		m = re.search(h + '\s+ether\s+(\S+)', r)
+		if m:
+			macs[h] = m.group(1)
+	return macs
 
-def do_ping(host):
-	chi,cho = os.popen2( ("ping", "-c", "1", "-i", "0.2", host) )
+
+def search_hosts(network):
+	chi,cho = os.popen2( ("nmap", "-n", "-sP", network) )
 	r = ''.join(cho.readlines())
-	m = re.search('Unreachable', r)
-	if m: return None
-	else:
-		m = get_mac(host)
-		return m
-
-
+	chi.close()
+	cho.close()
+	m = re.findall('Host (\S+) appears to be up',r)
+	return m
 
 
 
@@ -55,12 +57,26 @@ class MainWindow(QtGui.QMainWindow):
 		self.ui = uic.loadUi("mainwindow.ui",self)
 		self.ui.hostList.horizontalHeader().setStretchLastSection(True)
 		
-		m = do_ping("192.168.1.1")
-		if m: print m
-		m = do_ping("192.168.1.3")
-		if m: print m
+		self.setWindowTitle("Lab Admin")
+
+		self.connect(self.ui.buttonHosts,
+			QtCore.SIGNAL("clicked()"), self.getHosts)
+		
+	
+	def clearTable(self):
+		while self.ui.hostList.item(0,0):
+			self.ui.hostList.removeRow(0)
 		
 		
+	def getHosts(self):
+		n,c = QtGui.QInputDialog.getText(self,"Network","What network? (ex: 192.168.2.0/24)")
+		if not c: return
+		self.clearTable()
+		hosts = search_hosts(n)
+		macs = get_macs(hosts)
+		for h in hosts:
+			self.insertHost(h,macs[h])
+	
 	def insertHost(self,ip,mac):
 		h = HostItem()
 		h.setup(ip,mac)
