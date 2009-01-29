@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, os, re
+from subprocess import Popen
 from PyQt4 import QtCore, QtGui, uic
 
 
@@ -24,6 +25,28 @@ class HostItem(object):
 
 
 
+def get_mac(host):
+	chi,cho = os.popen2( ("/usr/sbin/arp", "-n", host) )
+	r = ''.join(cho.readlines())
+	m = re.search(host + '\s+ether\s+(\S+)', r)
+	if m:
+		p = m.group(1)
+		return p
+	else:
+		return None
+
+def do_ping(host):
+	chi,cho = os.popen2( ("ping", "-c", "1", "-i", "0.2", host) )
+	r = ''.join(cho.readlines())
+	m = re.search('Unreachable', r)
+	if m: return None
+	else:
+		m = get_mac(host)
+		return m
+
+
+
+
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -32,10 +55,17 @@ class MainWindow(QtGui.QMainWindow):
 		self.ui = uic.loadUi("mainwindow.ui",self)
 		self.ui.hostList.horizontalHeader().setStretchLastSection(True)
 		
+		m = do_ping("192.168.1.1")
+		if m: print m
+		m = do_ping("192.168.1.3")
+		if m: print m
+		
+		
 	def insertHost(self,ip,mac):
 		h = HostItem()
 		h.setup(ip,mac)
 		h.insert(self.ui.hostList)
+	
 
 
 
@@ -43,7 +73,7 @@ class MainWindow(QtGui.QMainWindow):
 if __name__ == '__main__':
 	app = QtGui.QApplication(sys.argv)
 	mainWin = MainWindow()
-	mainWin.insertHost("aa","bb")
-	mainWin.insertHost("tt","abcdf")
+	#mainWin.insertHost("aa","bb")
+	#mainWin.insertHost("tt","abcdf")
 	mainWin.show()
 	app.exec_()
