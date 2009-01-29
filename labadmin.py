@@ -49,6 +49,29 @@ def search_hosts(network):
 	return m
 
 
+class Filter(object):
+	def __init__(self):
+		self.macs = []
+	
+	
+	def loadFromFile(self, file):
+		f = open(file,"r")
+		k = f.readline()
+		while k:
+			self.macs.append(k.rstrip("\n").lower())
+			k = f.readline()
+		f.close()
+			
+
+	
+	def exe(self, hostList = []):
+		print self.macs
+		r = []
+		for h in hostList:
+			if h.mac == None: continue
+			if h.mac.lower() in self.macs:
+				r.append(h)
+		return r
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -56,31 +79,51 @@ class MainWindow(QtGui.QMainWindow):
 		QtGui.QWidget.__init__(self,parent)
 		self.ui = uic.loadUi("mainwindow.ui",self)
 		self.ui.hostList.horizontalHeader().setStretchLastSection(True)
+		self.hList = []
 		
 		self.setWindowTitle("Lab Admin")
 
 		self.connect(self.ui.buttonHosts,
 			QtCore.SIGNAL("clicked()"), self.getHosts)
+		self.connect(self.ui.buttonFilter,
+			QtCore.SIGNAL("clicked()"), self.applyFilter)
+		
+		self.filt = Filter()
+		self.filt.loadFromFile("cameva.macs")
 		
 	
 	def clearTable(self):
 		while self.ui.hostList.item(0,0):
 			self.ui.hostList.removeRow(0)
-		
+	
+	def refreshTable(self):
+		self.clearTable()
+		for h in self.hList:
+			print h.mac
+			h.insert(self.ui.hostList)
 		
 	def getHosts(self):
 		n,c = QtGui.QInputDialog.getText(self,"Network","What network? (ex: 192.168.2.0/24)")
 		if not c: return
 		self.clearTable()
+		self.hList = []
 		hosts = search_hosts(n)
 		macs = get_macs(hosts)
 		for h in hosts:
 			self.insertHost(h,macs[h])
-	
+
+
 	def insertHost(self,ip,mac):
 		h = HostItem()
 		h.setup(ip,mac)
 		h.insert(self.ui.hostList)
+		self.hList.append(h)
+	
+	
+	def applyFilter(self):
+		f = self.filt.exe(self.hList)
+		self.hList = f
+		self.refreshTable()
 	
 
 
