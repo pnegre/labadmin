@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, os, re
+import sys, os, re, time
 from subprocess import Popen
 from PyQt4 import QtCore, QtGui, uic
 
@@ -96,7 +96,22 @@ class MainWindow(QtGui.QMainWindow):
 	def execSsh(self):
 		pid = os.fork()
 		if pid == 0:
-			os.execl("/usr/bin/konsole", "konsole")
+			os.execl("/usr/bin/konsole", "konsole", "--script")
+		time.sleep(2)
+		
+		i = 1
+		for h in self.hList:
+			com = "dcop konsole-" + str(pid) + " konsole newSession > /dev/null"
+			os.system(com)
+			time.sleep(1)
+			com = "dcop konsole-" + str(pid) + " session-" + str(i) + ' sendSession "echo %s" >/dev/null' % h.ip
+			os.system(com)
+			i = i + 1
+		
+		
+		
+		
+		
 	
 	def clearTable(self):
 		while self.ui.hostList.item(0,0):
