@@ -32,7 +32,6 @@ def get_macs(hosts):
 	for h in hosts:
 		macs[h] = None
 		print h + '\s+ether\s+(\S+)'
-		#print r
 		m = re.search(h + '\s+ether\s+(\S+)', r)
 		if m:
 			macs[h] = m.group(1)
@@ -88,9 +87,16 @@ class MainWindow(QtGui.QMainWindow):
 			QtCore.SIGNAL("clicked()"), self.getHosts)
 		self.connect(self.ui.buttonFilter,
 			QtCore.SIGNAL("clicked()"), self.applyFilter)
+		self.connect(self.ui.buttonSsh,
+			QtCore.SIGNAL("clicked()"), self.execSsh)
 		
 		self.filt = Filter()
 		
+		
+	def execSsh(self):
+		pid = os.fork()
+		if pid == 0:
+			os.execl("/usr/bin/konsole", "konsole")
 	
 	def clearTable(self):
 		while self.ui.hostList.item(0,0):
@@ -136,7 +142,5 @@ class MainWindow(QtGui.QMainWindow):
 if __name__ == '__main__':
 	app = QtGui.QApplication(sys.argv)
 	mainWin = MainWindow()
-	#mainWin.insertHost("aa","bb")
-	#mainWin.insertHost("tt","abcdf")
 	mainWin.show()
 	app.exec_()
