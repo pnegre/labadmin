@@ -61,7 +61,10 @@ class Filter(object):
 			self.macs.append(k.rstrip("\n").lower())
 			k = f.readline()
 		f.close()
-			
+	
+	
+	def clear(self):
+		self.macs = []
 
 	
 	def exe(self, hostList = []):
@@ -89,7 +92,6 @@ class MainWindow(QtGui.QMainWindow):
 			QtCore.SIGNAL("clicked()"), self.applyFilter)
 		
 		self.filt = Filter()
-		self.filt.loadFromFile("cameva.macs")
 		
 	
 	def clearTable(self):
@@ -121,6 +123,10 @@ class MainWindow(QtGui.QMainWindow):
 	
 	
 	def applyFilter(self):
+		fn = QtGui.QFileDialog.getOpenFileName(self, "Load File")
+		if fn == '': return
+		self.filt.clear()
+		self.filt.loadFromFile(fn)
 		f = self.filt.exe(self.hList)
 		self.hList = f
 		self.refreshTable()
