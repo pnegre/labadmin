@@ -99,11 +99,18 @@ class MainWindow(QtGui.QMainWindow):
 			os.execl("/usr/bin/konsole", "konsole", "--script")
 		time.sleep(2)
 		
-		i = 1
+		first = 1
 		for h in self.hList:
+			if first:
+				time.sleep(1)
+				first = 0
+				continue
 			com = "dcop konsole-" + str(pid) + " konsole newSession > /dev/null"
 			os.system(com)
 			time.sleep(1)
+		
+		i = 1
+		for h in self.hList:		
 			com = "dcop konsole-" + str(pid) + " session-" + str(i) + ' sendSession "echo %s" >/dev/null' % h.ip
 			os.system(com)
 			i = i + 1
