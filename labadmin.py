@@ -13,6 +13,8 @@ class HostWgt(QtGui.QTableWidgetItem):
 		self.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
 
+
+
 class HostItem(object):
 	def setup(self,ip,mac):
 		self.ip = ip
@@ -22,6 +24,13 @@ class HostItem(object):
 		t.insertRow(0)
 		t.setItem(0, 0, HostWgt(self,str(self.ip)))
 		t.setItem(0, 1, HostWgt(self,str(self.mac)))
+
+
+class PBarDlg(QtGui.QDialog):
+	def __init__(self, parent=None):
+		QtGui.QWidget.__init__(self,parent)
+		self.ui = uic.loadUi("pbar.ui",self)
+
 
 
 def get_macs(hosts):
@@ -42,8 +51,7 @@ def get_macs(hosts):
 
 def search_hosts(network,win):
 	p = QtCore.QProcess()
-	pBar = QtGui.QProgressBar(win)
-	pBar.setRange(0,0)
+	pBar = PBarDlg(win)
 	pBar.show()
 	p.start("nmap", ["-n", "-sP", network])
 	f = p.waitForFinished(30)
