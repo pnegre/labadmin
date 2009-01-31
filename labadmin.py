@@ -41,16 +41,24 @@ def get_macs(hosts):
 	return macs
 
 
-def search_hosts(network):
+def search_hosts(network,win):
 	p = QtCore.QProcess()
+	pBar = QtGui.QProgressBar(win)
+	pBar.setRange(1,100)
+	pBar.show()
 	p.start("nmap", ["-n", "-sP", network])
-	f = p.waitForFinished(10)
+	f = p.waitForFinished(30)
+	i = 1
 	while not f:
-		f = p.waitForFinished(10)
-	
+		pBar.setValue(i)
+		i = i + 1
+		if (i>98): i = 1
+		QtGui.QApplication.processEvents()
+		f = p.waitForFinished(30)
 	dta = p.readAll()
 	print dta
 	m = re.findall('Host (\S+) appears to be up',str(dta))
+	pBar.close()
 	return m
 
 
@@ -143,7 +151,7 @@ class MainWindow(QtGui.QMainWindow):
 		if not c: return
 		self.clearTable()
 		self.hList = []
-		hosts = search_hosts(n)
+		hosts = search_hosts(n,self)
 		macs = get_macs(hosts)
 		for h in hosts:
 			self.insertHost(h,macs[h])
