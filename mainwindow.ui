@@ -23,54 +23,71 @@
    </property>
    <layout class="QGridLayout" name="gridLayout" >
     <item row="0" column="0" >
-     <widget class="QTableWidget" name="hostList" >
-      <column>
-       <property name="text" >
-        <string>IP</string>
-       </property>
-      </column>
-      <column>
-       <property name="text" >
-        <string>MAC</string>
-       </property>
-      </column>
-     </widget>
-    </item>
-    <item row="0" column="1" >
-     <layout class="QVBoxLayout" name="verticalLayout" >
+     <layout class="QHBoxLayout" name="horizontalLayout" >
       <item>
-       <widget class="QPushButton" name="buttonHosts" >
-        <property name="text" >
-         <string>Get Hosts!</string>
-        </property>
+       <widget class="QTableWidget" name="hostList" >
+        <column>
+         <property name="text" >
+          <string>IP</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>MAC</string>
+         </property>
+        </column>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="buttonFilter" >
-        <property name="text" >
-         <string>Apply filter</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="buttonSsh" >
-        <property name="text" >
-         <string>SSH</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout" >
+        <item>
+         <widget class="QPushButton" name="buttonHosts" >
+          <property name="text" >
+           <string>Get Hosts!</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonFilter" >
+          <property name="text" >
+           <string>Apply filter</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>72</width>
+            <height>98</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonCluster" >
+          <property name="text" >
+           <string>Cluster SSH</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonSsh" >
+          <property name="minimumSize" >
+           <size>
+            <width>101</width>
+            <height>27</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>SSH</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>

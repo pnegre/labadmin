@@ -33,6 +33,8 @@ class PBarDlg(QtGui.QDialog):
 
 
 
+
+
 def get_macs(hosts):
 	p = QtCore.QProcess()
 	p.start("/usr/sbin/arp", ["-n"])
@@ -62,6 +64,8 @@ def search_hosts(network,win):
 	m = re.findall('Host (\S+) appears to be up',str(dta))
 	pBar.close()
 	return m
+
+
 
 
 class Filter(object):
@@ -107,10 +111,22 @@ class MainWindow(QtGui.QMainWindow):
 			QtCore.SIGNAL("clicked()"), self.applyFilter)
 		self.connect(self.ui.buttonSsh,
 			QtCore.SIGNAL("clicked()"), self.execSsh)
+		self.connect(self.ui.buttonCluster,
+			QtCore.SIGNAL("clicked()"), self.execCluster)
 		
 		self.filt = Filter()
 		
-		
+	
+	def execCluster(self):
+		hosts = []
+		for h in self.hList:
+			hosts.append(str(h.ip))
+		pid = os.fork()
+		if pid == 0:
+			os.execl("/usr/bin/cssh", "cssh", *hosts)
+	
+	
+	
 	def execSsh(self):
 		pid = os.fork()
 		if pid == 0:
@@ -131,12 +147,7 @@ class MainWindow(QtGui.QMainWindow):
 		for h in self.hList:		
 			com = "dcop konsole-" + str(pid) + " session-" + str(i) + ' sendSession "echo %s" >/dev/null' % h.ip
 			os.system(com)
-			i = i + 1
-		
-		
-		
-		
-		
+			i = i + 1		
 	
 	def clearTable(self):
 		while self.ui.hostList.item(0,0):
