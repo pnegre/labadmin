@@ -115,7 +115,13 @@ class MainWindow(QtGui.QMainWindow):
 			QtCore.SIGNAL("clicked()"), self.execCluster)
 		
 		self.filt = Filter()
+		self.center()
 		
+	
+	def center(self):
+		screen = QtGui.QDesktopWidget().screenGeometry()
+		size =  self.geometry()
+		self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
 	
 	def execCluster(self):
 		hosts = []
