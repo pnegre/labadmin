@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, re, time
-from subprocess import Popen
 from PyQt4 import QtCore, QtGui, uic
 
 
@@ -102,6 +101,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.ui = uic.loadUi("mainwindow.ui",self)
 		self.ui.hostList.horizontalHeader().setStretchLastSection(True)
 		self.hList = []
+		self.filteredList = self.hList
 		
 		self.setWindowTitle("Lab Admin")
 
@@ -125,7 +125,7 @@ class MainWindow(QtGui.QMainWindow):
 	
 	def execCluster(self):
 		hosts = []
-		for h in self.hList:
+		for h in self.filteredList:
 			hosts.append(str(h.ip))
 		pid = os.fork()
 		if pid == 0:
@@ -140,7 +140,7 @@ class MainWindow(QtGui.QMainWindow):
 		time.sleep(2)
 		
 		first = 1
-		for h in self.hList:
+		for h in self.filteredList:
 			if first:
 				time.sleep(1)
 				first = 0
@@ -150,7 +150,7 @@ class MainWindow(QtGui.QMainWindow):
 			time.sleep(1)
 		
 		i = 1
-		for h in self.hList:		
+		for h in self.filteredList:
 			com = "dcop konsole-" + str(pid) + " session-" + str(i) + ' sendSession "echo %s" >/dev/null' % h.ip
 			os.system(com)
 			i = i + 1		
@@ -161,26 +161,22 @@ class MainWindow(QtGui.QMainWindow):
 	
 	def refreshTable(self):
 		self.clearTable()
-		for h in self.hList:
-			print h.mac
+		for h in self.filteredList:
 			h.insert(self.ui.hostList)
 		
 	def getHosts(self):
 		n,c = QtGui.QInputDialog.getText(self,"Network","What network? (ex: 192.168.2.0/24)")
-		if not c: return
-		self.clearTable()
-		self.hList = []
+		if not c: return		
 		hosts = search_hosts(n,self)
 		macs = get_macs(hosts)
+		self.hList = []
 		for h in hosts:
-			self.insertHost(h,macs[h])
-
-
-	def insertHost(self,ip,mac):
-		h = HostItem()
-		h.setup(ip,mac)
-		h.insert(self.ui.hostList)
-		self.hList.append(h)
+			hi = HostItem()
+			hi.setup(h,macs[h])
+			self.hList.append(hi)
+		
+		self.filteredList = self.hList
+		self.refreshTable()
 	
 	
 	def applyFilter(self):
@@ -188,8 +184,7 @@ class MainWindow(QtGui.QMainWindow):
 		if fn == '': return
 		self.filt.clear()
 		self.filt.loadFromFile(fn)
-		f = self.filt.exe(self.hList)
-		self.hList = f
+		self.filteredList = self.filt.exe(self.hList)
 		self.refreshTable()
 	
 
