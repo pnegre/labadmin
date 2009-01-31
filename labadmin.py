@@ -25,14 +25,17 @@ class HostItem(object):
 
 
 def get_macs(hosts):
-	s = os.popen( ("/usr/sbin/arp -n") )
-	r = ''.join(s.readlines())
-	s.close()
+	p = QtCore.QProcess()
+	p.start("/usr/sbin/arp", ["-n"])
+	f = p.waitForFinished(10)
+	while not f:
+		f = p.waitForFinished(10)
+	dta = p.readAll()
 	macs = {}
 	for h in hosts:
 		macs[h] = None
 		print h + '\s+ether\s+(\S+)'
-		m = re.search(h + '\s+ether\s+(\S+)', r)
+		m = re.search(h + '\s+ether\s+(\S+)', str(dta))
 		if m:
 			macs[h] = m.group(1)
 	return macs
@@ -41,10 +44,9 @@ def get_macs(hosts):
 def search_hosts(network):
 	p = QtCore.QProcess()
 	p.start("nmap", ["-n", "-sP", network])
-	f = p.waitForFinished(100)
+	f = p.waitForFinished(10)
 	while not f:
-		print "."
-		f = p.waitForFinished(100)
+		f = p.waitForFinished(10)
 	
 	dta = p.readAll()
 	print dta
