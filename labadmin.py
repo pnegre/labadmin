@@ -34,7 +34,6 @@ def get_macs(hosts):
 	macs = {}
 	for h in hosts:
 		macs[h] = None
-		print h + '\s+ether\s+(\S+)'
 		m = re.search(h + '\s+ether\s+(\S+)', str(dta))
 		if m:
 			macs[h] = m.group(1)
@@ -44,19 +43,14 @@ def get_macs(hosts):
 def search_hosts(network,win):
 	p = QtCore.QProcess()
 	pBar = QtGui.QProgressBar(win)
-	pBar.setRange(1,100)
+	pBar.setRange(0,0)
 	pBar.show()
 	p.start("nmap", ["-n", "-sP", network])
 	f = p.waitForFinished(30)
-	i = 1
 	while not f:
-		pBar.setValue(i)
-		i = i + 1
-		if (i>98): i = 1
 		QtGui.QApplication.processEvents()
 		f = p.waitForFinished(30)
 	dta = p.readAll()
-	print dta
 	m = re.findall('Host (\S+) appears to be up',str(dta))
 	pBar.close()
 	return m
