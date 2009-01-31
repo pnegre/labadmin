@@ -39,10 +39,16 @@ def get_macs(hosts):
 
 
 def search_hosts(network):
-	s = os.popen( "nmap " + "-n " + "-sP " + str(network) )
-	r = ''.join(s.readlines())
-	s.close()
-	m = re.findall('Host (\S+) appears to be up',r)
+	p = QtCore.QProcess()
+	p.start("nmap", ["-n", "-sP", network])
+	f = p.waitForFinished(100)
+	while not f:
+		print "."
+		f = p.waitForFinished(100)
+	
+	dta = p.readAll()
+	print dta
+	m = re.findall('Host (\S+) appears to be up',str(dta))
 	return m
 
 
