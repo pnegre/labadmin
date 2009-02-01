@@ -19,10 +19,12 @@ class HostItem(object):
 		self.ip = ip
 		self.mac = mac
 	
+	
 	def insert(self,t):
 		t.insertRow(0)
 		t.setItem(0, 0, HostWgt(self,str(self.ip)))
 		t.setItem(0, 1, HostWgt(self,str(self.mac)))
+
 
 
 class PBarDlg(QtGui.QDialog):
@@ -37,9 +39,7 @@ class PBarDlg(QtGui.QDialog):
 def get_macs(hosts):
 	p = QtCore.QProcess()
 	p.start("/usr/sbin/arp", ["-n"])
-	f = p.waitForFinished(10)
-	while not f:
-		f = p.waitForFinished(10)
+	p.waitForFinished(-1)
 	dta = p.readAll()
 	macs = {}
 	for h in hosts:
@@ -55,10 +55,8 @@ def search_hosts(network,win):
 	pBar = PBarDlg(win)
 	pBar.show()
 	p.start("nmap", ["-n", "-sP", network])
-	f = p.waitForFinished(30)
-	while not f:
+	while not p.waitForFinished(30):
 		QtGui.QApplication.processEvents()
-		f = p.waitForFinished(30)
 	dta = p.readAll()
 	m = re.findall('Host (\S+) appears to be up',str(dta))
 	pBar.close()
@@ -123,6 +121,7 @@ class MainWindow(QtGui.QMainWindow):
 		size =  self.geometry()
 		self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
 	
+	
 	def execCluster(self):
 		hosts = []
 		for h in self.filteredList:
@@ -130,7 +129,6 @@ class MainWindow(QtGui.QMainWindow):
 		pid = os.fork()
 		if pid == 0:
 			os.execl("/usr/bin/cssh", "cssh", *hosts)
-	
 	
 	
 	def execSsh(self):
@@ -155,14 +153,17 @@ class MainWindow(QtGui.QMainWindow):
 			os.system(com)
 			i = i + 1		
 	
+	
 	def clearTable(self):
 		while self.ui.hostList.item(0,0):
 			self.ui.hostList.removeRow(0)
+	
 	
 	def refreshTable(self):
 		self.clearTable()
 		for h in self.filteredList:
 			h.insert(self.ui.hostList)
+		
 		
 	def getHosts(self):
 		n,c = QtGui.QInputDialog.getText(self,"Network","What network? (ex: 192.168.2.0/24)")
