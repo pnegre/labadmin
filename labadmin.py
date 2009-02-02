@@ -131,12 +131,14 @@ class MainWindow(QtGui.QMainWindow):
 		d = ClusterDlg()
 		if not d.exec_(): return
 		us = d.username.text()
+		tl = "-G"
+		if d.tileWindows.isChecked(): tl = "-g"
 		hosts = []
 		for h in self.filteredList:
 			hosts.append(str(h.ip))
 		pid = os.fork()
 		if pid == 0:
-			os.execl("/usr/bin/cssh", "cssh", "-l" + us, *hosts)
+			os.execl("/usr/bin/cssh", "cssh", tl, "-l" + us, *hosts)
 	
 	
 	def execSsh(self):
