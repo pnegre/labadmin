@@ -34,6 +34,11 @@ class PBarDlg(QtGui.QDialog):
 
 
 
+class ClusterDlg(QtGui.QDialog):
+	def __init__(self, parent=None):
+		QtGui.QWidget.__init__(self,parent)
+		self.ui = uic.loadUi("cluster.ui",self)
+
 
 
 def get_macs(hosts):
@@ -123,12 +128,15 @@ class MainWindow(QtGui.QMainWindow):
 	
 	
 	def execCluster(self):
+		d = ClusterDlg()
+		if not d.exec_(): return
+		us = d.username.text()
 		hosts = []
 		for h in self.filteredList:
 			hosts.append(str(h.ip))
 		pid = os.fork()
 		if pid == 0:
-			os.execl("/usr/bin/cssh", "cssh", *hosts)
+			os.execl("/usr/bin/cssh", "cssh", "-l" + us, *hosts)
 	
 	
 	def execSsh(self):
