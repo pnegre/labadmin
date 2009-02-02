@@ -119,6 +119,9 @@ class MainWindow(QtGui.QMainWindow):
 		
 		self.filt = Filter()
 		self.center()
+		self.ui.buttonSsh.setDisabled(True)
+		self.ui.buttonCluster.setDisabled(True)
+		#self.ui.buttonFilter.setDisabled(True)
 		
 	
 	def center(self):
@@ -173,6 +176,11 @@ class MainWindow(QtGui.QMainWindow):
 		self.clearTable()
 		for h in self.filteredList:
 			h.insert(self.ui.hostList)
+		
+		if len(self.filteredList):
+			self.ui.buttonCluster.setDisabled(False)
+		else:
+			self.ui.buttonCluster.setDisabled(True)
 		
 		
 	def getHosts(self):
