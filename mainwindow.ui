@@ -36,6 +36,11 @@
           <string>MAC</string>
          </property>
         </column>
+        <column>
+         <property name="text" >
+          <string>Tag</string>
+         </property>
+        </column>
        </widget>
       </item>
       <item>

@@ -18,13 +18,14 @@ class HostItem(object):
 	def setup(self,ip,mac):
 		self.ip = ip
 		self.mac = mac
+		self.tag = None
 	
 	
 	def insert(self,t):
 		t.insertRow(0)
 		t.setItem(0, 0, HostWgt(self,str(self.ip)))
 		t.setItem(0, 1, HostWgt(self,str(self.mac)))
-
+		t.setItem(0, 2, HostWgt(self,str(self.tag)))
 
 
 class PBarDlg(QtGui.QDialog):
@@ -72,20 +73,27 @@ def search_hosts(network,win):
 
 class Filter(object):
 	def __init__(self):
-		self.macs = []
+		self.clear()
 	
 	
 	def loadFromFile(self, file):
+		self.clear()
 		f = open(file,"r")
-		k = f.readline()
-		while k:
-			self.macs.append(k.rstrip("\n").lower())
-			k = f.readline()
+		lines = f.readlines()
 		f.close()
+		for l in lines:
+			l = l.rstrip("\n").lower()
+			s = l.split(" ")
+			self.macs.append(s[0])
+			if len(s) > 1:
+				self.tags[s[0]] = s[1]
+			else:
+				self.tags[s[0]] = None
 	
 	
 	def clear(self):
 		self.macs = []
+		self.tags = {}
 
 	
 	def exe(self, hostList = []):
@@ -94,6 +102,7 @@ class Filter(object):
 		for h in hostList:
 			if h.mac == None: continue
 			if h.mac.lower() in self.macs:
+				h.tag = self.tags[h.mac]
 				r.append(h)
 		return r
 
