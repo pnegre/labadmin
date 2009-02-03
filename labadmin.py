@@ -81,14 +81,20 @@ class Filter(object):
 		f = open(file,"r")
 		lines = f.readlines()
 		f.close()
+		mac = ""; tag=""
 		for l in lines:
 			l = l.rstrip("\n").lower()
-			s = l.split(" ")
-			self.macs.append(s[0])
-			if len(s) > 1:
-				self.tags[s[0]] = s[1]
+			m = re.search("^(..:..:..:..:..:..)\s+(\S*)$",l)
+			if m:
+				mac = m.group(1)
+				tag = m.group(2)
 			else:
-				self.tags[s[0]] = None
+				m = re.search("^(..:..:..:..:..:..)\s*$",l)
+				if not m: continue
+				mac = m.group(1)
+				tag = None
+			self.macs.append(mac)
+			self.tags[mac] = tag
 	
 	
 	def clear(self):
@@ -97,7 +103,6 @@ class Filter(object):
 
 	
 	def exe(self, hostList = []):
-		print self.macs
 		r = []
 		for h in hostList:
 			if h.mac == None: continue
