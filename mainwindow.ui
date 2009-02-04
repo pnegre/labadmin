@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>354</height>
+    <width>653</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -17,12 +17,12 @@
     <rect>
      <x>0</x>
      <y>29</y>
-     <width>550</width>
-     <height>303</height>
+     <width>653</width>
+     <height>429</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
-    <item row="0" column="0" >
+    <item row="0" column="0" colspan="2" >
      <layout class="QHBoxLayout" name="horizontalLayout" >
       <item>
        <widget class="QTableWidget" name="hostList" >
@@ -55,7 +55,7 @@
         <item>
          <widget class="QPushButton" name="buttonFilter" >
           <property name="text" >
-           <string>Apply filter</string>
+           <string>Load Filter</string>
           </property>
          </widget>
         </item>
@@ -74,27 +74,48 @@
         </item>
         <item>
          <widget class="QPushButton" name="buttonCluster" >
-          <property name="text" >
-           <string>Cluster SSH</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="buttonSsh" >
           <property name="minimumSize" >
            <size>
-            <width>101</width>
+            <width>111</width>
             <height>27</height>
            </size>
           </property>
           <property name="text" >
-           <string>SSH</string>
+           <string>Cluster SSH</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
      </layout>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QComboBox" name="filterBox" >
+      <property name="minimumSize" >
+       <size>
+        <width>311</width>
+        <height>31</height>
+       </size>
+      </property>
+      <item>
+       <property name="text" >
+        <string>All hosts</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <spacer name="horizontalSpacer" >
+      <property name="orientation" >
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0" >
+       <size>
+        <width>314</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -103,7 +124,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>550</width>
+     <width>653</width>
      <height>29</height>
     </rect>
    </property>
@@ -112,8 +133,8 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>332</y>
-     <width>550</width>
+     <y>458</y>
+     <width>653</width>
      <height>22</height>
     </rect>
    </property>

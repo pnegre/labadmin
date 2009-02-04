@@ -126,17 +126,14 @@ class MainWindow(QtGui.QMainWindow):
 		self.connect(self.ui.buttonHosts,
 			QtCore.SIGNAL("clicked()"), self.getHosts)
 		self.connect(self.ui.buttonFilter,
-			QtCore.SIGNAL("clicked()"), self.applyFilter)
-		self.connect(self.ui.buttonSsh,
-			QtCore.SIGNAL("clicked()"), self.execSsh)
+			QtCore.SIGNAL("clicked()"), self.loadFilter)
 		self.connect(self.ui.buttonCluster,
 			QtCore.SIGNAL("clicked()"), self.execCluster)
+		self.connect(self.ui.filterBox,
+			QtCore.SIGNAL("activated(int)"), self.applyFilter)
 		
-		self.filt = Filter()
 		self.center()
-		self.ui.buttonSsh.setDisabled(True)
 		self.ui.buttonCluster.setDisabled(True)
-		#self.ui.buttonFilter.setDisabled(True)
 		
 	
 	def center(self):
@@ -156,30 +153,7 @@ class MainWindow(QtGui.QMainWindow):
 			hosts.append(str(h.ip))
 		pid = os.fork()
 		if pid == 0:
-			os.execl("/usr/bin/cssh", "cssh", tl, "-l" + us, *hosts)
-	
-	
-	def execSsh(self):
-		pid = os.fork()
-		if pid == 0:
-			os.execl("/usr/bin/konsole", "konsole", "--script")
-		time.sleep(2)
-		
-		first = 1
-		for h in self.filteredList:
-			if first:
-				time.sleep(1)
-				first = 0
-				continue
-			com = "dcop konsole-" + str(pid) + " konsole newSession > /dev/null"
-			os.system(com)
-			time.sleep(1)
-		
-		i = 1
-		for h in self.filteredList:
-			com = "dcop konsole-" + str(pid) + " session-" + str(i) + ' sendSession "echo %s" >/dev/null' % h.ip
-			os.system(com)
-			i = i + 1		
+			os.execl("/usr/bin/cssh", "cssh", tl, "-l" + us, *hosts)		
 	
 	
 	def clearTable(self):
@@ -213,14 +187,22 @@ class MainWindow(QtGui.QMainWindow):
 		self.refreshTable()
 	
 	
-	def applyFilter(self):
+	def loadFilter(self):
 		fn = QtGui.QFileDialog.getOpenFileName(self, "Load File")
 		if fn == '': return
-		self.filt.clear()
-		self.filt.loadFromFile(fn)
-		self.filteredList = self.filt.exe(self.hList)
+		f = Filter()
+		f.clear()
+		f.loadFromFile(fn)
+		self.ui.filterBox.addItem(fn,QtCore.QVariant(f))
+
+
+	def applyFilter(self,i):
+		if (i==0):
+			self.filteredList = self.hList
+		else:
+			f = self.ui.filterBox.itemData(i).toPyObject()
+			self.filteredList = f.exe(self.hList)
 		self.refreshTable()
-	
 
 
 
