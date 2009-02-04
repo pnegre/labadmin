@@ -133,6 +133,8 @@ class MainWindow(QtGui.QMainWindow):
 			QtCore.SIGNAL("clicked()"), self.getHosts)
 		self.connect(self.ui.buttonFilter,
 			QtCore.SIGNAL("clicked()"), self.loadFilter)
+		self.connect(self.ui.buttonClearFilters,
+			QtCore.SIGNAL("clicked()"), self.clearFilters)
 		self.connect(self.ui.buttonCluster,
 			QtCore.SIGNAL("clicked()"), self.execCluster)
 		self.connect(self.ui.filterBox,
@@ -160,9 +162,8 @@ class MainWindow(QtGui.QMainWindow):
 	
 	
 	def closeEvent(self,e):
-		if len(self.fnameList) > 0:
-			print self.fnameList
-			self.settings.setValue("filters", QtCore.QVariant(self.fnameList))
+		print self.fnameList
+		self.settings.setValue("filters", QtCore.QVariant(self.fnameList))
 		e.accept()
 	
 	
@@ -222,7 +223,7 @@ class MainWindow(QtGui.QMainWindow):
 		f = Filter()
 		f.clear()
 		if not f.loadFromFile(fn): return
-		self.ui.filterBox.addItem(fn[-20:],QtCore.QVariant(f))
+		self.ui.filterBox.addItem("..." + fn[-20:], QtCore.QVariant(f))
 		self.fnameList.append(fn)
 
 
@@ -234,6 +235,10 @@ class MainWindow(QtGui.QMainWindow):
 			self.filteredList = f.exe(self.hList)
 		self.refreshTable()
 
+	def clearFilters(self):
+		self.fnameList = []
+		self.ui.filterBox.clear()
+		self.ui.filterBox.addItem('All hosts')
 
 
 

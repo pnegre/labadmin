@@ -60,14 +60,21 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="buttonClearFilters" >
+          <property name="text" >
+           <string>Clear Filters</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer" >
           <property name="orientation" >
            <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0" >
            <size>
-            <width>72</width>
-            <height>98</height>
+            <width>69</width>
+            <height>188</height>
            </size>
           </property>
          </spacer>
