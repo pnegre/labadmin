@@ -78,7 +78,11 @@ class Filter(object):
 	
 	def loadFromFile(self, file):
 		self.clear()
-		f = open(file,"r")
+		try:
+			f = open(file,"r")
+		except(IOError), e:
+			print "error opening", file
+			return False
 		lines = f.readlines()
 		f.close()
 		mac = ""; tag=""
@@ -96,6 +100,7 @@ class Filter(object):
 			mac = mac.lower()
 			self.macs.append(mac)
 			self.tags[mac] = tag
+		return True
 	
 	
 	def clear(self):
@@ -120,6 +125,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.ui.hostList.horizontalHeader().setStretchLastSection(True)
 		self.hList = []
 		self.filteredList = self.hList
+		self.fnameList = []
 		
 		self.setWindowTitle("Lab Admin")
 
@@ -135,11 +141,29 @@ class MainWindow(QtGui.QMainWindow):
 		self.center()
 		self.ui.buttonCluster.setDisabled(True)
 		
+		self.settings = QtCore.QSettings("labadmin","labadmin")
+		s = self.settings.value("filters").toString()
+		if s:
+			self.loadFilter(str(s))
+		else:
+			l = self.settings.value("filters").toList()
+			for f in l:
+				print str(f.toString())
+				self.loadFilter(str(f.toString()))
+		
 	
 	def center(self):
 		screen = QtGui.QDesktopWidget().screenGeometry()
 		size =  self.geometry()
 		self.move((screen.width()-size.width())/2, (screen.height()-size.height())/2)
+	
+	
+	
+	def closeEvent(self,e):
+		if len(self.fnameList) > 0:
+			print self.fnameList
+			self.settings.setValue("filters", QtCore.QVariant(self.fnameList))
+		e.accept()
 	
 	
 	def execCluster(self):
@@ -187,17 +211,23 @@ class MainWindow(QtGui.QMainWindow):
 		self.refreshTable()
 	
 	
-	def loadFilter(self):
-		fn = QtGui.QFileDialog.getOpenFileName(self, "Load File")
-		if fn == '': return
+	def loadFilter(self, fnd=''):
+		fn = ''
+		if fnd == '':
+			fn = QtGui.QFileDialog.getOpenFileName(self, "Load File")
+			if fn == '': return
+		else:
+			fn = fnd
+		if fn in self.fnameList: return
 		f = Filter()
 		f.clear()
-		f.loadFromFile(fn)
+		if not f.loadFromFile(fn): return
 		self.ui.filterBox.addItem(fn[-20:],QtCore.QVariant(f))
+		self.fnameList.append(fn)
 
 
 	def applyFilter(self,i):
-		if (i==0):
+		if i==0:
 			self.filteredList = self.hList
 		else:
 			f = self.ui.filterBox.itemData(i).toPyObject()
