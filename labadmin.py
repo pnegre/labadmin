@@ -164,8 +164,10 @@ class MainWindow(QtGui.QMainWindow):
 	
 	
 	def closeEvent(self,e):
-		print self.fnameList
-		self.settings.setValue("filters", QtCore.QVariant(self.fnameList))
+		if len(self.fnameList) > 0:
+			self.settings.setValue("filters", QtCore.QVariant(self.fnameList))
+		else:
+			self.settings.setValue("filters", QtCore.QVariant(""))
 		e.accept()
 	
 	
