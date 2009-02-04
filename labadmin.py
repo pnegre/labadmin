@@ -52,7 +52,7 @@ def get_macs(hosts):
 		macs[h] = None
 		m = re.search(h + '\s+ether\s+(\S+)', str(dta))
 		if m:
-			macs[h] = m.group(1)
+			macs[h] = m.group(1).lower()
 	return macs
 
 
@@ -83,7 +83,7 @@ class Filter(object):
 		f.close()
 		mac = ""; tag=""
 		for l in lines:
-			l = l.rstrip("\n").lower()
+			l = l.rstrip("\n")
 			m = re.search("^(..:..:..:..:..:..)\s+(\S*)$",l)
 			if m:
 				mac = m.group(1)
@@ -93,6 +93,7 @@ class Filter(object):
 				if not m: continue
 				mac = m.group(1)
 				tag = None
+			mac = mac.lower()
 			self.macs.append(mac)
 			self.tags[mac] = tag
 	
@@ -106,7 +107,7 @@ class Filter(object):
 		r = []
 		for h in hostList:
 			if h.mac == None: continue
-			if h.mac.lower() in self.macs:
+			if h.mac in self.macs:
 				h.tag = self.tags[h.mac]
 				r.append(h)
 		return r
