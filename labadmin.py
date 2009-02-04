@@ -142,6 +142,8 @@ class MainWindow(QtGui.QMainWindow):
 		
 		self.center()
 		self.ui.buttonCluster.setDisabled(True)
+		self.ui.hostList.setColumnWidth(0,150)
+		self.ui.hostList.setColumnWidth(1,150)
 		
 		self.settings = QtCore.QSettings("labadmin","labadmin")
 		s = self.settings.value("filters").toString()
