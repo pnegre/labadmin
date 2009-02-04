@@ -193,7 +193,7 @@ class MainWindow(QtGui.QMainWindow):
 		f = Filter()
 		f.clear()
 		f.loadFromFile(fn)
-		self.ui.filterBox.addItem(fn,QtCore.QVariant(f))
+		self.ui.filterBox.addItem(fn[-20:],QtCore.QVariant(f))
 
 
 	def applyFilter(self,i):
