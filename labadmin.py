@@ -146,14 +146,18 @@ class MainWindow(QtGui.QMainWindow):
 		self.ui.hostList.setColumnWidth(1,150)
 		
 		self.settings = QtCore.QSettings("labadmin","labadmin")
+		self.loadSettings()
+		
+		
+	def loadSettings(self):
 		s = self.settings.value("filters").toString()
-		if s:
-			self.loadFilter(str(s))
-		else:
-			l = self.settings.value("filters").toList()
-			for f in l:
-				print str(f.toString())
-				self.loadFilter(str(f.toString()))
+		if s == "": return
+		print "-" + s + "-"
+		l = str(s).split("|")
+		
+		for f in l:
+			print f
+			self.loadFilter(f)
 		
 	
 	def center(self):
@@ -164,10 +168,8 @@ class MainWindow(QtGui.QMainWindow):
 	
 	
 	def closeEvent(self,e):
-		if len(self.fnameList) > 0:
-			self.settings.setValue("filters", QtCore.QVariant(self.fnameList))
-		else:
-			self.settings.setValue("filters", QtCore.QVariant(""))
+		v = "|".join(self.fnameList)
+		self.settings.setValue("filters", QtCore.QVariant(v))
 		e.accept()
 	
 	
@@ -228,7 +230,7 @@ class MainWindow(QtGui.QMainWindow):
 		f.clear()
 		if not f.loadFromFile(fn): return
 		self.ui.filterBox.addItem("..." + fn[-20:], QtCore.QVariant(f))
-		self.fnameList.append(fn)
+		self.fnameList.append(str(fn))
 
 
 	def applyFilter(self,i):
