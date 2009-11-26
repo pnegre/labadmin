@@ -64,7 +64,7 @@ def search_hosts(network,win):
 	while not p.waitForFinished(30):
 		QtGui.QApplication.processEvents()
 	dta = p.readAll()
-	m = re.findall('Host (\S+) appears to be up',str(dta))
+	m = re.findall('Host (\S+) .* up',str(dta))
 	pBar.close()
 	return m
 
