@@ -4,6 +4,8 @@
 import sys, os, re, time
 from PyQt4 import QtCore, QtGui, uic
 
+import utils
+
 
 class HostWgt(QtGui.QTableWidgetItem):
 	def __init__(self,p,t):
@@ -152,11 +154,11 @@ class MainWindow(QtGui.QMainWindow):
 	def loadSettings(self):
 		s = self.settings.value("filters").toString()
 		if s == "": return
-		print "-" + s + "-"
+		#print "-" + s + "-"
 		l = str(s).split("|")
 		
 		for f in l:
-			print f
+			#print f
 			self.loadFilter(f)
 		
 	
@@ -249,6 +251,9 @@ class MainWindow(QtGui.QMainWindow):
 
 
 if __name__ == '__main__':
+	if utils.checkRequiredPrograms() == False:
+		exit(0)
+	
 	app = QtGui.QApplication(sys.argv)
 	mainWin = MainWindow()
 	mainWin.show()
