@@ -46,7 +46,7 @@ class ClusterDlg(QtGui.QDialog):
 
 def get_macs(hosts):
 	p = QtCore.QProcess()
-	p.start("/usr/sbin/arp", ["-n"])
+	p.start(utils.completePath("arp"), ["-n"])
 	p.waitForFinished(-1)
 	dta = p.readAll()
 	macs = {}
@@ -62,7 +62,7 @@ def search_hosts(network,win):
 	p = QtCore.QProcess()
 	pBar = PBarDlg(win)
 	pBar.show()
-	p.start("nmap", ["-n", "-sP", network])
+	p.start(utils.completePath("nmap"), ["-n", "-sP", network])
 	while not p.waitForFinished(30):
 		QtGui.QApplication.processEvents()
 	dta = p.readAll()
@@ -186,7 +186,7 @@ class MainWindow(QtGui.QMainWindow):
 			hosts.append(str(h.ip))
 		pid = os.fork()
 		if pid == 0:
-			os.execl("/usr/bin/cssh", "cssh", tl, "-l" + us, *hosts)		
+			os.execl(utils.completePath("cssh"), "cssh", tl, "-l" + us, *hosts)		
 	
 	
 	def clearTable(self):

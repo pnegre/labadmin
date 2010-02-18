@@ -2,13 +2,20 @@
 
 import os.path
 
-progs = ('cssh', 'nmap')
+progs = ('cssh', 'nmap', 'arp')
 paths = ('/bin', '/usr/bin', '/sbin', '/usr/sbin')
+
+absolutePaths = {}
+
+def completePath(prog):
+	return absolutePaths[prog]
 
 
 def checkProg(prog):
 	for p in paths:
-		if os.path.isfile(p+'/'+prog):
+		path = p+'/'+prog
+		if os.path.isfile(path):
+			absolutePaths[prog] = path 
 			return True
 	return False
 		
