@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Encoding=UTF-8
+Name=labadmin
+Icon=labadmin
+Exec=/usr/bin/labadmin
+Categories=Utility

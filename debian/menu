@@ -1,0 +1,7 @@
+?package(labadmin): needs="X11"\
+		     section="Applications" \
+		     title="labadmin" \
+		     command="/usr/bin/labadmin" \
+			 icon="/usr/share/pixmaps/labadmin.xpm"
+
+

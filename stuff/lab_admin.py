@@ -250,7 +250,7 @@ class MainWindow(QtGui.QMainWindow):
 
 
 
-if __name__ == '__main__':
+def main():
 	if utils.checkRequiredPrograms() == False:
 		exit(0)
 	

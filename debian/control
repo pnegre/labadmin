@@ -1,0 +1,16 @@
+Source: labadmin
+Section: games
+Priority: optional
+Maintainer: Pere Negre <pere.negre@gmail.com>
+Build-Depends-Indep: python (>= 2.1)
+Build-Depends: debhelper (>= 4.1.25)
+Standards-Version: 3.7.2
+
+Package: labadmin
+Architecture: all
+Depends: python-qt4 (>= 4.4.4-6), nmap (>= 5.0), clusterssh (>= 4.0), ${python:Depends}
+Description: Manage your linux lab easily
+ labadmin is a program that enables you to control, by means of using cluster-ssh,
+ a large number of linux computers at once.
+
+
