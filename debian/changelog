@@ -1,3 +1,9 @@
+labadmin (0.1-1.1) unstable; urgency=low
+
+  * Changed dependencies
+
+ -- pnegre <pnegre@andromeda.lan>  Fri, 30 Apr 2010 20:08:12 +0200
+
 labadmin (0.1-1) unstable; urgency=low
 
   * First release.

@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 
 Package: labadmin
 Architecture: all
-Depends: python-qt4 (>= 4.4.4-6), nmap (>= 5.0), clusterssh (>= 3.2), ${python:Depends}
+Depends: python-qt4 (>= 4.0), nmap (>= 4.0), clusterssh (>= 3.0), ${python:Depends}
 Description: Manage your linux lab easily
  labadmin is a program that enables you to control, by means of using cluster-ssh,
  a large number of linux computers at once.
