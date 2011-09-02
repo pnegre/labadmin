@@ -62,11 +62,11 @@ def search_hosts(network,win):
 	p = QtCore.QProcess()
 	pBar = PBarDlg(win)
 	pBar.show()
-	p.start(utils.completePath("nmap"), ["-n", "-sP", network])
+	p.start(utils.completePath("nmap"), ["-n", "-sP", "-oG", "-", network])
 	while not p.waitForFinished(30):
 		QtGui.QApplication.processEvents()
 	dta = p.readAll()
-	m = re.findall('Host (\S+) .* up',str(dta))
+	m = re.findall('Host: (\S+) .* Up',str(dta))
 	pBar.close()
 	return m
 
